@@ -1,0 +1,28 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environments
+rasa_env/
+venv/
+env/
+
+# Node.js and npm
+node_modules/
+
+# IDE files (VSCode, IntelliJ, etc.)
+.vscode/
+.idea/
+
+# Mac OS X
+.DS_Store
+
+# Logs
+*.log
+
+# Temporary files
+*.swp
+
+# Rasa model files and cache
+.rasa/
+models/
