@@ -25,4 +25,8 @@ node_modules/
 
 # Rasa model files and cache
 .rasa/
+
 models/
+
+
+.env
