@@ -111,3 +111,16 @@ nlu:
       - Which course is the best option for me?
       - Which is the most recommended course?
 
+  - intent: ask_enrollment
+    examples: |
+      - How can I enroll in a course?
+      - How do I sign up for a course?
+      - Can you guide me through the enrollment process?
+      - How do I apply for admission?
+      - What is the procedure to enroll?
+      - Where can I apply for a course?
+      - How do I join your courses?
+      - I want to enroll, what should I do?
+      - What are the steps for enrollment?
+      - Can you help me with enrollment?
+

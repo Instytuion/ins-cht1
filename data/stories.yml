@@ -8,9 +8,13 @@ stories:
   - action: utter_greet
   - intent: mood_great
   - action: utter_happy
-  - intent: ask_instytution
-  - action: utter_ask_instytution
+
   
+- story: About Institution
+  steps:
+    - intent: ask_instytution
+    - action: utter_ask_instytution
+
 
 - story: sad path 1
   steps:
@@ -31,3 +35,15 @@ stories:
   - action: utter_did_that_help
   - intent: deny
   - action: utter_goodbye
+
+- story: ask for enrollment process
+  steps:
+    - intent: ask_enrollment
+    - action: utter_ask_enrollment
+
+
+- story: best course query
+  steps:
+  - intent: ask_best_course
+  - action: action_get_best_course
+

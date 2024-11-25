@@ -63,6 +63,7 @@ intents:
   - bot_challenge
   - ask_instytution
   - ask_best_course
+  - ask_enrollment
 
 responses:
   utter_greet:
@@ -87,13 +88,26 @@ responses:
   utter_ask_instytution:
     - text: "Our institution provides a range of eLearning services and educational resources. We offer live courses, recorded classes, educational tools, and a seamless eCommerce platform to purchase learning materials."
 
-  utter_best_course:
-    - text: "I'm fetching the best course for you. Please wait a moment..."
+  utter_ask_enrollment:
+    - text: |
+        To enroll in a course, follow these steps:
+        1. **Go to the 'Programs' tab** in the navigation bar and select a program you are interested in.
+        2. **Browse the courses** available under the selected program and pick the one you want to enroll in.
+        3. On the course detail page, **view the available batches** for the course.
+        4. **Choose a batch** that suits your schedule.
+        5. **Enroll in the course** by selecting the batch.
+
+        If you need help at any stage, just let me know, and I can guide you through the process.
+
+  utter_ask_best_course:
+    - text: "Here are the best courses we recommend for you."
+
 
 actions:
-  - action_recommend_best_course
+  - action_get_best_course
 
-entities: []  # Remove if not using any entities
+
+
 
 session_config:
   session_expiration_time: 60
