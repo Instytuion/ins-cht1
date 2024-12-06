@@ -1,14 +1,17 @@
-# Use the official Rasa base image for actions
+# Use the official Rasa SDK base image
 FROM rasa/rasa-sdk:3.0.0
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy action server files
+# Copy custom action code
 COPY ./actions /app/actions
 
-# Expose the port that Action server will run on (default is 5055)
+# Install dependencies for custom actions (make sure requirements.txt exists)
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Expose the Action server port (default is 5055)
 EXPOSE 5055
 
-# Set entry point for the action server
+# Command to run the Action server
 CMD ["rasa", "run", "actions"]
