@@ -12,9 +12,17 @@ cors:
 
 # Server which runs your custom actions.
 # https://rasa.com/docs/rasa/custom-actions
-
 action_endpoint:
- url: "http://localhost:5055/webhook"
+  url: "http://action_server:5055/webhook"
+
+
+
+# action_endpoint:
+#   url: "http://action_server:5055/webhook"
+
+
+
+
 
 # Tracker store which is used to store the conversations.
 # By default the conversations are stored in memory.
@@ -44,5 +52,7 @@ action_endpoint:
 #  password: password
 #  queue: queue
 # Rasa API
-rasa:
-  url: "http://localhost:5005/api"
+# rasa:
+#   url: "http://localhost:5005/api"
+rest:
+  url: "http://localhost:5005"
