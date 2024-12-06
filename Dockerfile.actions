@@ -1,17 +1,30 @@
-# Use the official Rasa SDK base image
-FROM rasa/rasa-sdk:3.0.0
+# Use the same Python version as in the main Dockerfile
+FROM python:3.8-slim
 
-# Set the working directory in the container
+# Set environment variables to avoid buffering issues with logs
+ENV PYTHONUNBUFFERED=1
+
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy custom action code
-COPY ./actions /app/actions
+# Copy the requirements file for actions into the container
+COPY requirements-actions.txt /app/requirements-actions.txt
 
-# Install dependencies for custom actions (make sure requirements.txt exists)
-RUN pip install --no-cache-dir -r requirements.txt
+# Upgrade pip to ensure we have the latest version
+RUN pip install --upgrade pip
 
-# Expose the Action server port (default is 5055)
+# Install dependencies for Rasa actions
+RUN pip install --no-cache-dir -r requirements-actions.txt
+
+# Install Rasa SDK (required for custom actions)
+RUN pip install rasa-sdk==3.0.0
+
+# Copy the custom actions code into the container
+COPY actions /app/actions
+
+# Expose the port for the action server
 EXPOSE 5055
 
-# Command to run the Action server
-CMD ["rasa", "run", "actions"]
+# Command to start the Rasa Action Server
+ENTRYPOINT ["rasa", "run", "actions"]
+
