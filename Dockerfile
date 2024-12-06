@@ -32,19 +32,36 @@
 # # Set the default command to run the action server
 # ENTRYPOINT ["/app/entrypoint.sh"]
 # Use the official Rasa base image
-FROM rasa/rasa:3.0.0-full
 
-# Set the working directory in the container
+
+
+FROM python:3.8-slim
+
+# Set the working directory
 WORKDIR /app
 
-# Copy your project files into the container
-COPY . .
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    python3-dev \
+    libssl-dev \
+    libffi-dev \
+    libpq-dev
 
-# Install dependencies (make sure requirements.txt exists with necessary dependencies)
+# Install pip and upgrade it
+RUN python -m pip install --upgrade pip
+
+# Copy your requirements.txt and install dependencies
+COPY requirements.txt .
+
+# Ensure correct permissions
+RUN chown -R root:root /opt/venv /usr/local/lib/python3.8
+
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose the Rasa server port (default is 5005)
+# Expose the port the app will run on
 EXPOSE 5005
 
-# Command to run the Rasa server
-CMD ["rasa", "run", "--enable-api", "--cors", "*", "--port", "5005", "--model", "models/"]
+# Command to run the application
+CMD ["rasa", "run", "--enable-api"]
