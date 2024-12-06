@@ -43,20 +43,53 @@
 
 
 
-# Use the official Python 3.8 slim image as the base image
+# # Use the official Python 3.8 slim image as the base image
+# FROM python:3.8-slim
+
+# # Set environment variables to avoid writing .pyc files and to ensure UTF-8 encoding
+# ENV PYTHONDONTWRITEBYTECODE 1
+# ENV PYTHONUNBUFFERED 1
+
+# # Set the working directory inside the container
+# WORKDIR /app
+
+# # Copy the requirements file into the container
+# COPY requirements.txt /app/
+
+# # Install system dependencies and Python dependencies
+# RUN apt-get update && apt-get install -y \
+#     build-essential \
+#     python3-dev \
+#     libssl-dev \
+#     libffi-dev \
+#     libpq-dev
+
+# # Upgrade pip
+# RUN python -m pip install --upgrade pip
+
+# # Create and activate a virtual environment, and install the requirements
+# RUN python -m venv /opt/venv
+# RUN /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
+
+# # Copy the rest of the application code into the container
+# COPY . /app/
+
+# # Expose the port the app will run on
+# EXPOSE 5005
+
+# # Set the entrypoint for the Rasa application
+# ENTRYPOINT ["/opt/venv/bin/rasa"]
+# CMD ["run", "--enable-api", "--cors", "*", "--port", "5005"]
+
 FROM python:3.8-slim
 
-# Set environment variables to avoid writing .pyc files and to ensure UTF-8 encoding
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the requirements file into the container
 COPY requirements.txt /app/
 
-# Install system dependencies and Python dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     python3-dev \
@@ -64,21 +97,16 @@ RUN apt-get update && apt-get install -y \
     libffi-dev \
     libpq-dev
 
-# Upgrade pip
 RUN python -m pip install --upgrade pip
 
-# Create and activate a virtual environment, and install the requirements
 RUN python -m venv /opt/venv
-RUN /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
+RUN /opt/venv/bin/python -m pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application code into the container
 COPY . /app/
 
-# Expose the port the app will run on
+ENV PATH="/opt/venv/bin:$PATH"
+
 EXPOSE 5005
 
-# Set the entrypoint for the Rasa application
-ENTRYPOINT ["/opt/venv/bin/rasa"]
+ENTRYPOINT ["rasa"]
 CMD ["run", "--enable-api", "--cors", "*", "--port", "5005"]
-
-
