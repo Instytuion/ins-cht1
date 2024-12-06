@@ -35,12 +35,28 @@
 
 
 
+
+
+
+
+
+
+
+
+# Use the official Python 3.8 slim image as the base image
 FROM python:3.8-slim
 
-# Set the working directory
+# Set environment variables to avoid writing .pyc files and to ensure UTF-8 encoding
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Set the working directory inside the container
 WORKDIR /app
 
-# Install system dependencies
+# Copy the requirements file into the container
+COPY requirements.txt /app/
+
+# Install system dependencies and Python dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     python3-dev \
@@ -48,20 +64,21 @@ RUN apt-get update && apt-get install -y \
     libffi-dev \
     libpq-dev
 
-# Install pip and upgrade it
+# Upgrade pip
 RUN python -m pip install --upgrade pip
 
-# Copy your requirements.txt and install dependencies
-COPY requirements.txt .
+# Create and activate a virtual environment, and install the requirements
+RUN python -m venv /opt/venv
+RUN /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
 
-# Ensure correct permissions
-RUN chown -R root:root /opt/venv /usr/local/lib/python3.8
-
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy the rest of the application code into the container
+COPY . /app/
 
 # Expose the port the app will run on
 EXPOSE 5005
 
-# Command to run the application
-CMD ["rasa", "run", "--enable-api"]
+# Set the entrypoint for the Rasa application
+ENTRYPOINT ["/opt/venv/bin/rasa"]
+CMD ["run", "--enable-api", "--cors", "*", "--port", "5005"]
+
+
