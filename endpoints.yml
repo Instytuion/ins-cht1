@@ -55,4 +55,4 @@ action_endpoint:
 # rasa:
 #   url: "http://localhost:5005/api"
 rest:
-  url: "https://rasa-bot-service.onrender.com"
+  url: "https://rasa-bot-service-027q.onrender.com"
