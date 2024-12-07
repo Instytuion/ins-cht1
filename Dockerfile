@@ -82,27 +82,49 @@
 # CMD ["run", "--enable-api", "--cors", "*", "--port", "5005"]
 
 
+# Dockerfile
+# Use a lightweight Python image
 FROM python:3.8-slim
 
+# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+# Set the working directory
 WORKDIR /app
 
-COPY requirements.txt /app/
-
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     python3-dev \
     libssl-dev \
     libffi-dev \
-    libpq-dev
+    libpq-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
+# Copy the requirements file
+COPY requirements.txt /app/
+
+# Upgrade pip and install dependencies
 RUN python -m pip install --upgrade pip
-RUN python -m pip install --no-cache-dir -r requirements.txt
+RUN python -m venv /opt/venv
+RUN /opt/venv/bin/python -m pip install --no-cache-dir -r requirements.txt
 
+# Copy the entire project to the working directory
 COPY . /app/
 
+# Add the virtual environment to the PATH
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Train the Rasa model during the build process
+RUN rasa train
+
+# Expose the port Rasa server will run on
 EXPOSE 5005
 
-CMD ["rasa", "run", "--enable-api", "--cors", "*", "--port", "5005"]
+# Set the entry point for the container
+ENTRYPOINT ["rasa"]
+
+# Run the Rasa server with API enabled and specify model loading
+CMD ["run", "--enable-api", "--cors", "*", "--port", "5005", "--model", "models"]
