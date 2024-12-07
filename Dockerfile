@@ -81,8 +81,6 @@
 # ENTRYPOINT ["/opt/venv/bin/rasa"]
 # CMD ["run", "--enable-api", "--cors", "*", "--port", "5005"]
 
-
-# Dockerfile
 # Use a lightweight Python image
 FROM python:3.8-slim
 
