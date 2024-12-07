@@ -111,5 +111,5 @@ COPY . /app/
 # Expose the Rasa server port
 EXPOSE 5005
 
-# Run the Rasa server with API enabled and specify dynamic port binding
-CMD ["rasa", "run", "--enable-api", "--cors", "*", "--port", "${PORT:-5005}", "--model", "models"]
+CMD ["rasa", "run", "--enable-api", "--cors", "*", "--port", "5005"]
+
