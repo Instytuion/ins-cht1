@@ -81,6 +81,7 @@
 # ENTRYPOINT ["/opt/venv/bin/rasa"]
 # CMD ["run", "--enable-api", "--cors", "*", "--port", "5005"]
 
+
 FROM python:3.8-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -98,15 +99,10 @@ RUN apt-get update && apt-get install -y \
     libpq-dev
 
 RUN python -m pip install --upgrade pip
-
-RUN python -m venv /opt/venv
-RUN /opt/venv/bin/python -m pip install --no-cache-dir -r requirements.txt
+RUN python -m pip install --no-cache-dir -r requirements.txt
 
 COPY . /app/
 
-ENV PATH="/opt/venv/bin:$PATH"
-
 EXPOSE 5005
 
-ENTRYPOINT ["rasa"]
-CMD ["run", "--enable-api", "--cors", "*", "--port", "5005"]
+CMD ["rasa", "run", "--enable-api", "--cors", "*", "--port", "5005"]
