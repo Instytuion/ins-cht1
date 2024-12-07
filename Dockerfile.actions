@@ -54,4 +54,4 @@ COPY actions /app/actions
 EXPOSE 5055
 
 # Command to start the Rasa Action Server
-ENTRYPOINT ["rasa", "run", "actions"]
+ENTRYPOINT ["rasa", "run", "actions", "--enable-api", "--cors", "*"]
