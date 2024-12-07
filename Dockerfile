@@ -101,28 +101,15 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy the requirements file
+# Copy requirements and install dependencies
 COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Upgrade pip and install dependencies
-RUN python -m pip install --upgrade pip
-RUN python -m venv /opt/venv
-RUN /opt/venv/bin/python -m pip install --no-cache-dir -r requirements.txt
-
-# Copy the entire project to the working directory
+# Copy project files
 COPY . /app/
 
-# Add the virtual environment to the PATH
-ENV PATH="/opt/venv/bin:$PATH"
-
-# Train the Rasa model during the build process
-RUN rasa train
-
-# Expose the port Rasa server will run on
+# Expose the Rasa server port
 EXPOSE 5005
 
-# Set the entry point for the container
-ENTRYPOINT ["rasa"]
-
-# Run the Rasa server with API enabled and specify model loading
-CMD ["run", "--enable-api", "--cors", "*", "--port", "5005", "--model", "models"]
+# Run the Rasa server with API enabled and specify dynamic port binding
+CMD ["rasa", "run", "--enable-api", "--cors", "*", "--port", "${PORT:-5005}", "--model", "models"]
