@@ -84,29 +84,36 @@
 # Use a lightweight Python image
 
 
-# Use a compatible Python version for Rasa 3.6.20 (Python 3.9 or Python 3.8 is fine)
-FROM python:3.9-slim 
 
-# Set environment variables to avoid buffering issues with logs
+
+FROM python:3.8-slim
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Set the working directory inside the container
+# Set the working directory
 WORKDIR /app
 
-# Copy the requirements file for actions into the container
-COPY requirements-actions.txt /app/requirements-actions.txt
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    python3-dev \
+    libssl-dev \
+    libffi-dev \
+    libpq-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip to ensure we have the latest version
-RUN pip install --upgrade pip
+# Copy requirements and install dependencies
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Install dependencies for Rasa actions (including rasa-sdk and others)
-RUN pip install --no-cache-dir -r requirements-actions.txt
+# Copy project files
+COPY . /app/
 
-# Copy the custom actions code into the container
-COPY actions /app/actions
+# Expose the Rasa server port
+EXPOSE 5005
 
-# Expose the port for the action server
-EXPOSE 5055
+CMD ["rasa", "run", "--enable-api", "--cors", "*", "--port", "5005"]
 
-# Command to start the Rasa Action Server
-ENTRYPOINT ["rasa", "run", "actions", "--enable-api", "--cors", "*"]
