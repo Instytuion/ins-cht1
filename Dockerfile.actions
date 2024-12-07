@@ -30,6 +30,10 @@
 # ENTRYPOINT ["rasa", "run", "actions"]
 
 # Use the same Python version as in the main Dockerfile
+
+
+
+# Use the same Python version as in the main Dockerfile
 FROM python:3.8-slim
 
 # Set environment variables to avoid buffering issues with logs
@@ -55,3 +59,6 @@ EXPOSE 5055
 
 # Command to start the Rasa Action Server
 ENTRYPOINT ["rasa", "run", "actions", "--enable-api", "--cors", "*"]
+
+
+
