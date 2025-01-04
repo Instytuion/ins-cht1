@@ -1,10 +1,43 @@
+# # Use the Rasa SDK base image
+# FROM rasa/rasa-sdk:latest
+
+# # Switch to root user
+# USER root
+
+# # Copy requirements.txt for additional dependencies
+# COPY ./requirements.txt /app/requirements.txt
+
+# # Install Python dependencies
+# RUN pip install --no-cache-dir -r /app/requirements.txt
+
+# # Copy your custom actions folder into the container
+# COPY ./actions /app/actions
+
+# # Set the working directory
+# WORKDIR /app
+
+# # Switch back to non-root user
+# USER 1001
+
+# # Expose the default port for the action server
+# EXPOSE 5055
+
+# # Start the action server
+# CMD ["rasa", "run", "--actions", "actions"]
 # Use the Rasa SDK base image
 FROM rasa/rasa-sdk:latest
 
-# Switch to root user
+# Switch to root user to install dependencies
 USER root
 
-# Copy requirements.txt for additional dependencies
+# Install system dependencies for librdkafka (confluent-kafka)
+RUN apt-get update && apt-get install -y \
+    librdkafka-dev \
+    build-essential \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements.txt for additional Python dependencies
 COPY ./requirements.txt /app/requirements.txt
 
 # Install Python dependencies
@@ -16,7 +49,7 @@ COPY ./actions /app/actions
 # Set the working directory
 WORKDIR /app
 
-# Switch back to non-root user
+# Switch back to non-root user (recommended for security reasons)
 USER 1001
 
 # Expose the default port for the action server
