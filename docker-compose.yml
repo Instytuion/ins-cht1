@@ -1,3 +1,33 @@
+# version: "3.9"
+
+# services:
+#   rasa:
+#     image: rasa/rasa:latest
+#     ports:
+#       - "5005:5005"
+#     volumes:
+#       - .:/app
+#     environment:
+#       - "DJANGO_SETTINGS_MODULE=chat_bot.settings"
+#       - "wzttne=${wzttne}"
+#       - "j_j=${j_j}"
+#     command:
+#       - run
+#       - --enable-api
+#       - --cors
+#       - "*"
+#     depends_on:
+#       - action-server
+
+#   action-server:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile.actions
+#     ports:
+#       - "5055:5055"
+#     volumes:
+#       - .:/app
+
 version: "3.9"
 
 services:
@@ -27,3 +57,15 @@ services:
       - "5055:5055"
     volumes:
       - .:/app
+    command:
+      - rasa
+      - run
+      - --actions
+      - actions
+    environment:
+      - "DJANGO_SETTINGS_MODULE=chat_bot.settings"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5055/"]
+      interval: 30s
+      retries: 3
+      start_period: 5s
