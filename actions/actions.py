@@ -71,6 +71,9 @@
 
 #         dispatcher.utter_message(text=response)
 #         return []
+
+
+
 from typing import Any, Text, Dict, List
 from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
@@ -127,9 +130,10 @@ class ActionRecommendBestCourse(Action):
 
     async def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         try:
-            logger.info("Fetching the best course...")
+            logger.info("Fetching the best course...1231313")
             result = await self.fetch_best_course()
-
+            logger.info("Best course: {}".format(result))
+            print('result is :', result)
             if result and len(result) >= 3:
                 best_course_name = result[1]
                 student_count = result[2]

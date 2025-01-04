@@ -1,141 +1,29 @@
-# # version: '3.8'
-
-# # services:
-# #   rasa:
-# #     build:
-# #       context: .
-# #       dockerfile: Dockerfile
-# #     volumes:
-# #       - .:/app
-# #     ports:
-# #       - 5005:5005
-# #     environment:
-# #       - DB_NAME=${DB_NAME}
-# #       - DB_USER=${DB_USER}
-# #       - DB_PASSWORD=${DB_PASSWORD}
-# #       - DB_HOST=${DB_HOST}
-# #       - DB_PORT=${DB_PORT}
-# #       - DJ_SECRET_KEY=${DJ_SECRET_KEY}
-# #       - DEBUG=${DEBUG}
-# #       - debug_status=${debug_status}
-# #       - http_secure=${http_secure}
-# #     command: ["rasa", "run", "--enable-api", "--cors", "*", "--debug"]
-
-# #   action_server:
-# #     build:
-# #       context: .
-# #       dockerfile: Dockerfile
-# #     volumes:
-# #       - ./actions:/app/actions
-# #     ports:
-# #       - 5055:5055
-# #     environment:
-# #       - DB_NAME=${DB_NAME}
-# #       - DB_USER=${DB_USER}
-# #       - DB_PASSWORD=${DB_PASSWORD}
-# #       - DB_HOST=${DB_HOST}
-# #       - DB_PORT=${DB_PORT}
-# #       - DJ_SECRET_KEY=${DJ_SECRET_KEY}
-# #       - DEBUG=${DEBUG}
-# #       - debug_status=${debug_status}
-# #       - http_secure=${http_secure}
-# #     command: ["/app/entrypoint.sh"]
-# # version: '3.8'
-# services:
-#   rasa:
-#     build:
-#       context: .
-#       dockerfile: Dockerfile
-#     ports:
-#       - 5005:5005
-#     environment:
-#       - RASA_ENV=production
-#     command: ["rasa", "run", "--enable-api", "--cors", "*", "--debug"]
-#     depends_on:
-#       - action_server
-#     networks:
-#       - rasa_network
-
-#   action_server:
-#     build:
-#       context: .
-#       dockerfile: Dockerfile
-#     ports:
-#       - 5055:5055
-#     command: ["/app/entrypoint.sh"]
-#     networks:
-#       - rasa_network
-
-# networks:
-#   rasa_network:
-# services:
-#   rasa:
-#     build:
-#       context: .
-#       dockerfile: Dockerfile
-#     ports:
-#       - 5005:5005
-#     environment:
-#       - RASA_ENV=production
-#     command: ["rasa", "run", "--enable-api", "--cors", "*", "--port", "5005"]
-#     depends_on:
-#       - action_server
-#     networks:
-#       - rasa_network
-
-#   action_server:
-#     build:
-#       context: .
-#       dockerfile: Dockerfile.actions  # Pointing to the Action Server Dockerfile
-#     ports:
-#       - 5055:5055
-#     command: ["/app/entrypoint.sh"]
-#     networks:
-#       - rasa_network
-
-# networks:
-#   rasa_network:
-
-
-version: "3.9"  # Use the latest docker-compose file version
+version: "3.9"
 
 services:
   rasa:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: rasa/rasa:latest
     ports:
-      - 5005:5005
+      - "5005:5005"
+    volumes:
+      - .:/app
     environment:
-      - RASA_ENV=production
-    command: ["rasa", "run", "--enable-api", "--cors", "*", "--port", "5005"]
+      - "DJANGO_SETTINGS_MODULE=chat_bot.settings"
+      - "wzttne=${wzttne}"
+      - "j_j=${j_j}"
+    command:
+      - run
+      - --enable-api
+      - --cors
+      - "*"
     depends_on:
-      - action_server
-    networks:
-      - rasa_network
-    healthcheck:  # Ensure `action_server` is healthy before Rasa starts
-      test: ["CMD", "curl", "-f", "http://action_server:5055/webhook"]
-      interval: 3s
-      retries: 5
-      timeout: 5s
+      - action-server
 
-  action_server:
+  action-server:
     build:
       context: .
       dockerfile: Dockerfile.actions
     ports:
-      - 5055:5055
-    networks:
-      - rasa_network
-    entrypoint: ["/app/entrypoint.sh"]
-    environment:
-      - RASA_ENV=production
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5055"]
-      interval: 3s
-      retries: 5
-      timeout: 5s
-
-networks:
-  rasa_network:
-    driver: bridge
+      - "5055:5055"
+    volumes:
+      - .:/app

@@ -17,7 +17,7 @@ env = environ.Env()
 environ.Env.read_env()  # Ensure this is placed before using any env variables
 
 # Quick-start development settings - unsuitable for production
-SECRET_KEY = env('DJANGO_SECRET_KEY', default='django-insecure-3ovd+o036lia$wzttne(#rz*8m=$j_j&#rvl+lxk^w*m0#wfes')
+SECRET_KEY = env('DJANGO_SECRET_KEY', default='django-insecure-3ovd+o036lia$wzttne(#rz*8m=$j_j&#r   vl+lxk^w*m0#wfes')
 
 DEBUG = env('DEBUG', default=True)
 
